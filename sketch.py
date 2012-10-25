@@ -21,10 +21,9 @@ for x in range(WIDTH):
 def on_mouse_drag(x, y, dx, dy, button, modifiers):
     if button == mouse.LEFT:
         '''4x4 brush'''
-        canvas.colors[(y*WIDTH+x)*3:(y*WIDTH+x)*3+3] = [0, 0, 0]
-        canvas.colors[((y+1)*WIDTH+x)*3:((y+1)*WIDTH+x)*3+3] = [0, 0, 0]
-        canvas.colors[(y*WIDTH+x+1)*3:(y*WIDTH+x+1)*3+3] = [0, 0, 0]
-        canvas.colors[((y+1)*WIDTH+x+1)*3:((y+1)*WIDTH+x+1)*3+3] = [0, 0, 0]
+        for i in range(0, 2):
+            for j in range(0, 2):
+                canvas.colors[((y+i)*WIDTH+x+j)*3:((y+i)*WIDTH+x+j)*3+3] = [0, 0, 0]
 
 @window.event
 def on_draw():
