@@ -21,6 +21,8 @@ for x in range(WIDTH):
         canvas.vertices[(y*WIDTH+x)*2:(y*WIDTH+x)*2+2] = [x, y]
         canvas.colors[(y*WIDTH+x)*3:(y*WIDTH+x)*3+3] = [255, 255, 255]
 
+
+
 def drawPoint(x, y):
     #4x4 brush
     for i in range(0, 2):
@@ -30,7 +32,7 @@ def drawPoint(x, y):
 def interpolate(x1, y1, x2, y2):
     flag = True
     pointList = []
-    while(x1 != x2 and y1 != y2):
+    while x1 != x2 or y1 != y2:
         if(flag):
             if(x1 > x2):
                 x1 -= 1
