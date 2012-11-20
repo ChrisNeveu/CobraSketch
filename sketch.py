@@ -11,6 +11,7 @@ from .canvas import Canvas
 from .brush import Brush
 from .layer import Layer
 from .history import History
+from .stroke import Stroke
 
 '''Window width and height (also the width/height of our canvas'''
 WIDTH = 800
