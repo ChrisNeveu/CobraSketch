@@ -1,3 +1,6 @@
+#CobraSketch
+#by Andrew Sheldon, Chris Neveu, Ryan Darge, and Collin McAloon
+
 #!/usr/bin/env python3
 
 from pyglet import *
