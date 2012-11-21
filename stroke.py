@@ -3,17 +3,21 @@
 
 class Stroke:
     #Temp variables 
-    x_value = 10
-    y_value = 14
-    shade = 0
-    flag = False
+    'x_value = 10'
+    'y_value = 14'
+    'shade = 0'
     
-    stroke = (x_value, y_value, shade)
+    hidden = True
+    
+    stroke = (int, int, int)
+    #Stroke constructor 
+    def Stroke(x_value, y_value, shade):
+        Stroke.stroke = (x_value, y_value, shade)
 
     #Toggles the visibility of the stroke
-    def setVisibility(hidden):
-        Stroke.flag = hidden
+    def setVisibility(flag):
+        Stroke.hidden = flag
 
     #Gets the current visibility
     def getVisibility():
-        return Stroke.flag
+        return Stroke.hidden

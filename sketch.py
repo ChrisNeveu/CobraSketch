@@ -12,6 +12,7 @@ from .brush import Brush
 from .layer import Layer
 from .history import History
 from .stroke import Stroke
+from .action import Action
 
 '''Window width and height (also the width/height of our canvas'''
 WIDTH = 800
