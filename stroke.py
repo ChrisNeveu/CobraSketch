@@ -11,13 +11,14 @@ class Stroke:
     
     stroke = (int, int, int)
     #Stroke constructor 
-    def Stroke(x_value, y_value, shade):
-        Stroke.stroke = (x_value, y_value, shade)
+    def __init__(self, x_value, y_value, shade):
+        self.stroke = (x_value, y_value, shade)
+        self.hidden = True
 
     #Toggles the visibility of the stroke
-    def setVisibility(flag):
-        Stroke.hidden = flag
+    def setVisibility(self, flag):
+        self.hidden = flag
 
     #Gets the current visibility
-    def getVisibility():
-        return Stroke.hidden
+    def getVisibility(self):
+        return self.hidden
