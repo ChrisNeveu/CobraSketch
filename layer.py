@@ -2,4 +2,4 @@
 #by Andrew Sheldon, Chris Neveu, Ryan Darge, and Collin McAloon
 
 class Layer:
-    
+    '''Layer Class'''
