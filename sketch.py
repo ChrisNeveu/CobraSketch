@@ -14,63 +14,70 @@ from history import History
 from stroke import Stroke
 from action import Action
 
-'''Window width and height (also the width/height of our canvas'''
-WIDTH = 800
-HEIGHT = 600
+class CobraSketch:
+    '''Main Class'''
+    
+    def __init__(self):
+        self.width = 800
+        self.height = 600
 
-pointQueue = deque([])
+        self.pointQueue = deque([])
 
-window = window.Window(WIDTH-1, HEIGHT-1)
-batch = graphics.Batch()
+        self.window = window.Window(self.width-1, self.height-1)
+        self.batch = graphics.Batch()
 
-#Build the canvas
-canvas = batch.add(WIDTH*HEIGHT, gl.GL_POINTS, None, ('v2i'), ('c3B'))
-for x in range(WIDTH):
-    for y in range(HEIGHT):
-        '''We have to convert our 2d coordinates into a 1d array index'''
-        canvas.vertices[(y*WIDTH+x)*2:(y*WIDTH+x)*2+2] = [x, y]
-        canvas.colors[(y*WIDTH+x)*3:(y*WIDTH+x)*3+3] = [255, 255, 255]
+        self.canvas = self.batch.add(self.width*self.height, gl.GL_POINTS, None, ('v2i'), ('c3B'))
+        self.buildCanvas(self.canvas)
 
+        '''Create event handlers'''
+        self.on_mouse_drag  = self.window.event(self.on_mouse_drag)
+        self.on_draw  = self.window.event(self.on_draw)
 
+    def buildCanvas(self, canvas):
+        for x in range(self.width):
+            for y in range(self.height):
+                '''We have to convert our 2d coordinates into a 1d array index'''
+                canvas.vertices[(y*self.width+x)*2:(y*self.width+x)*2+2] = [x, y]
+                canvas.colors[(y*self.width+x)*3:(y*self.width+x)*3+3] = [255, 255, 255]
 
-def drawPoint(x, y):
-    #4x4 brush
-    for i in range(0, 2):
+    def drawPoint(self, x, y):
+        for i in range(0, 2):
             for j in range(0, 2):
-                canvas.colors[((y+i)*WIDTH+x+j)*3:((y+i)*WIDTH+x+j)*3+3] = [0, 0, 0]
+                self.canvas.colors[((y+i)*self.width+x+j)*3:((y+i)*self.width+x+j)*3+3] = [0, 0, 0]
 
-def interpolate(x1, y1, x2, y2):
-    flag = True
-    pointList = []
-    while x1 != x2 or y1 != y2:
-        if(flag):
-            if(x1 > x2):
-                x1 -= 1
-            elif(x1 < x2):
-                x1 += 1
-        else:
-            if(y1 > y2):
-                y1 -= 1
-            elif(y1 < y2):
-                y1 += 1
-        pointList.append((x1, y1))
-        flag = not flag
-    return pointList
-        
-@window.event
-def on_mouse_drag(x, y, dx, dy, button, modifiers):
-    if button == mouse.LEFT:
-        pointQueue.append((x, y))
-        if (len(pointQueue) > 1):
-            curPoint = pointQueue.popleft()
-            lineS = interpolate(curPoint[0], curPoint[1], pointQueue[0][0], pointQueue[0][1])
-            for point in lineS:
-                drawPoint(point[0], point[1])
-            drawPoint(curPoint[0], curPoint[1])
+    def interpolate(self, x1, y1, x2, y2):
+        flag = True
+        pointList = []
+        while x1 != x2 or y1 != y2:
+            if(flag):
+                if(x1 > x2):
+                    x1 -= 1
+                elif(x1 < x2):
+                    x1 += 1
+            else:
+                if(y1 > y2):
+                    y1 -= 1
+                elif(y1 < y2):
+                    y1 += 1
+            pointList.append((x1, y1))
+            flag = not flag
+        return pointList
+    
+    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        if button == mouse.LEFT:
+            self.pointQueue.append((x, y))
+            if (len(self.pointQueue) > 1):
+                curPoint = self.pointQueue.popleft()
+                lineS = self.interpolate(curPoint[0], curPoint[1], self.pointQueue[0][0], self.pointQueue[0][1])
+                for point in lineS:
+                    self.drawPoint(point[0], point[1])
+                self.drawPoint(curPoint[0], curPoint[1])
 
-@window.event
-def on_draw():
-        window.clear()
-        batch.draw()      
+    def on_draw(self):
+        self.window.clear()
+        self.batch.draw()      
+
+sketch = CobraSketch()
+
 
 app.run()
