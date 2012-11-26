@@ -6,20 +6,26 @@ from action import Action
 class History:
     '''Set up basic variables to see if it would run'''
     index = []
-    x = 0
+    x = int
+    def __init__(self):
+        self.index
+        self.x = 0
     #undo an action
     def undoAction(self, undo):
         if (issubclass(type(undo), Stroke)):
-            undo.setVisibility(False)
+            if(undo.getVisibility() == True):
+                undo.setVisibility(False)
     #redo an Action
     def redoAction(self, redo):
         if (issubclass(type(redo), Stroke)):
-            redo.setVisibility(True)
+            if (redo.getVisibility() == False):
+                redo.setVisibility(True)
     #get list of history action
     def getHistory(self):
         return self.index
     #add an action to history
     def addAction(self, Action):
+        #Checks the type and adds values to index
         if (issubclass(type(Action), Stroke)):
             self.index.append(Action.stroke)
         if (issubclass(type(Action), Brush)):
