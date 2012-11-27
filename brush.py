@@ -2,4 +2,9 @@
 #by Andrew Sheldon, Chris Neveu, Ryan Darge, and Collin McAloon
 
 class Brush:
-    '''Brush Class'''
+    ***Class for the Brush***
+    size = 1
+    texture =
+    shade = 123456
+
+    def setSize(
