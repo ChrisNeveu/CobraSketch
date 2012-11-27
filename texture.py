@@ -2,10 +2,12 @@
 #by Andrew Sheldon, Chris Neveu, Ryan Darge, and Collin McAloon
 
 class Texture:
-    ***Class for the textures for drawing***
-    center (x,y)
-    points []
+    '''Class for the textures for drawing'''
 
-    def __init__(self):
+    def __init__(self, center, points):
+            self.center = center
+            self.points = points
         
-    def brush()
+    def brush(self):
+        return self.points
+    
