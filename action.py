@@ -6,7 +6,8 @@ from .stroke import Stroke
 from .brush import Brush'''
 
 class Action:
-    stroke = int, int, int
-    brush = int, int
-    layer = int, int
-    
+    pass
+    #
+    #stroke = int, int, int
+    #brush = int, int
+    #layer = int, int
