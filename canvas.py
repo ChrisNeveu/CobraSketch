@@ -58,11 +58,13 @@ class Canvas:
 
     def add_point(self, x, y):
         self.pointQueue.append((x, y))
-        if (len(self.pointQueue) > 1):
+        if (len(self.pointQueue) > 2):
             curPoint = self.pointQueue.popleft()
             lineS = self._interpolate(curPoint[0], curPoint[1],
-                                     self.pointQueue[0][0],
-                                     self.pointQueue[0][1])
+                                      self.pointQueue[0][0],
+                                      self.pointQueue[0][1],
+                                      self.pointQueue[1][0],
+                                      self.pointQueue[1][1])
             for point in lineS:
                 self.drawPoint(point[0], point[1])
             self.drawPoint(curPoint[0], curPoint[1])
@@ -83,22 +85,15 @@ class Canvas:
         1d array index'''
         return y*self.width+x
 
-    def _interpolate(self, x1, y1, x2, y2):
-        flag = True
+    def _interpolate(self, x0, y0, x1, y1, x2, y2):
+        t = 0.0
         pointList = []
-        while x1 != x2 or y1 != y2:
-            if(flag):
-                if(x1 > x2):
-                    x1 -= 1
-                elif(x1 < x2):
-                    x1 += 1
-            else:
-                if(y1 > y2):
-                    y1 -= 1
-                elif(y1 < y2):
-                    y1 += 1
-            pointList.append((x1, y1))
-            flag = not flag
+        #B(t) = (1-t)^2P0 + 2(1-t)tP1 + t^2P2, t E [0,1]
+        while t <= 1:
+            ty = int(pow((1-t), 2) * x0 + 2*(1-t)*t*x1 + (t*t) * x2)
+            tx = int(pow((1-t), 2) * y0 + 2*(1-t)*t*y1 + (t*t) * y2)
+            t += .1
+            pointList.append((tx, ty))
         return pointList
 
     def resizeCanvas(self, top, right, bottom, left):
