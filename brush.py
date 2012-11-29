@@ -2,9 +2,9 @@
 #by Andrew Sheldon, Chris Neveu, Ryan Darge, and Collin McAloon
 
 class Brush:
-    ***Class for the Brush***
+    '''Class for the Brush'''
     size = 1
-    texture = 
+    #texture = 
     shade = 123456
 
     def __init__(self, s, tex, sha):

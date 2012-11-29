@@ -102,15 +102,17 @@ class CobraSketch:
     #
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if button == mouse.LEFT:
-            self.pointQueue.append((x, y))
-            if (len(self.pointQueue) > 1):
-                curPoint = self.pointQueue.popleft()
-                lineS = self._interpolate(curPoint[0], curPoint[1],
-                                         self.pointQueue[0][0],
-                                         self.pointQueue[0][1])
-                for point in lineS:
-                    self.drawPoint(point[0], point[1])
-                self.drawPoint(curPoint[0], curPoint[1])
+            if(x > 0 and y > 1 and x < self.width and y < self.height-1):
+                self.pointQueue.append((x, y))
+                if (len(self.pointQueue) > 1):
+                    curPoint = self.pointQueue.popleft()
+                    lineS = self._interpolate(curPoint[0], curPoint[1],
+                                             self.pointQueue[0][0],
+                                             self.pointQueue[0][1])
+                    for point in lineS:
+                        self.drawPoint(point[0], point[1])
+                    self.drawPoint(curPoint[0], curPoint[1])
+                    
 
     def on_mouse_press(self, x, y, button, modifiers):
         '''Event handler for mouse pressing.'''

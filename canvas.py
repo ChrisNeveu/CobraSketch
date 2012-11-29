@@ -67,6 +67,4 @@ class Canvas:
     def newLayer(self, position):
         '''Creates a new layer at the given position'''
 
-    def 
-
         
