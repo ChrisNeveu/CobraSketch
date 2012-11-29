@@ -61,7 +61,7 @@ class CobraSketch:
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if button == mouse.LEFT:
             if(x > 0 and y > 1 and x < self.width and y < self.height-1):
-                self.canvas.add_point(x,y)
+                self.canvas.addPoint(x,y)
                     
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -69,7 +69,7 @@ class CobraSketch:
 
     def on_mouse_release(self, x, y, button, modifiers):
         '''Event handler for mouse release.'''
-        self.canvas.end_line(x, y)
+        self.canvas.endLine(x, y)
 
     def on_draw(self):
         self.window.clear()
