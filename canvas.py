@@ -18,6 +18,9 @@ class Canvas:
     referenceY = int
     windowWidth = int
     windowHeight = int
+
+    layers = []
+    currentLayer = int
     
     name = ""
     filepath = "unnamed.cobra"
@@ -37,6 +40,8 @@ class Canvas:
         self.windowWidth = 800
         self.windowHeight = 600
 
+        self.layers.append(Layer("Layer 1",self.width,self.height))
+
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
         self.canvas = self.batch.add(self.width*self.height,
@@ -46,6 +51,8 @@ class Canvas:
         self._buildCanvas(self.canvas)
 
     def draw(self):
+        for layer in self.layers:
+            layer.applyTo(self.canvas)
         self.batch.draw()
 
     def _buildCanvas(self, canvas):
@@ -56,7 +63,7 @@ class Canvas:
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
-    def add_point(self, x, y):
+    def addPoint(self, x, y):
         self.pointQueue.append((x, y))
         if (len(self.pointQueue) > 1):
             curPoint = self.pointQueue.popleft()
@@ -68,7 +75,7 @@ class Canvas:
             self.drawPoint(curPoint[0], curPoint[1])
 
 
-    def end_line(self, x, y):
+    def endLine(self, x, y):
         curPoint = self.pointQueue.popleft()
         self.drawPoint(curPoint[0], curPoint[1])
         
