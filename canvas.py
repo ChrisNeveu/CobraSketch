@@ -89,9 +89,9 @@ class Canvas:
         t = 0.0
         pointList = []
         #B(t) = (1-t)^2P0 + 2(1-t)tP1 + t^2P2, t E [0,1]
-        while t <= 1:
-            ty = int(pow((1-t), 2) * x0 + 2*(1-t)*t*x1 + (t*t) * x2)
-            tx = int(pow((1-t), 2) * y0 + 2*(1-t)*t*y1 + (t*t) * y2)
+        while t <= 1.0:
+            ty = int(pow((1-t), 2) * y0 + 2*(1-t)*t*y1 + (t*t) * y2)
+            tx = int(pow((1-t), 2) * x0 + 2*(1-t)*t*x1 + (t*t) * x2)
             t += .1
             pointList.append((tx, ty))
         return pointList
