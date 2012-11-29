@@ -3,9 +3,9 @@
 
 class Brush:
     '''Class for the Brush'''
-    size = 1
-    #texture = 
-    shade = 123456
+    size = int
+    texture = (int, int)
+    shade = float
 
     def __init__(self, s, tex, sha):
         self.size = s
