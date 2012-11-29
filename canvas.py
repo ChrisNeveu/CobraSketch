@@ -20,7 +20,6 @@ class Canvas:
     windowHeight = int
 
     layers = []
-    currentLayer = int
     
     name = ""
     filepath = "unnamed.cobra"
@@ -41,6 +40,9 @@ class Canvas:
         self.windowHeight = 600
 
         self.layers.append(Layer("Layer 1",self.width,self.height))
+        self.currentLayer = self.layers[0]
+
+        self.curStroke = []
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
@@ -73,11 +75,14 @@ class Canvas:
                                       self.pointQueue[1][0],
                                       self.pointQueue[1][1])
             for point in lineS:
+                self.curStroke.append(point)
                 self.drawPoint(point[0], point[1])
+            self.curStroke.append(curPoint)                
             self.drawPoint(curPoint[0], curPoint[1])
 
 
     def endLine(self, x, y):
+        #SEND CURSTROKE TO LAYER, CLEAR CANVAS.COLORS -> Ryan
         curPoint = self.pointQueue.popleft()
         self.drawPoint(curPoint[0], curPoint[1])
         
@@ -99,7 +104,7 @@ class Canvas:
         while t <= 1.0:
             ty = int(pow((1-t), 2) * y0 + 2*(1-t)*t*y1 + (t*t) * y2)
             tx = int(pow((1-t), 2) * x0 + 2*(1-t)*t*x1 + (t*t) * x2)
-            t += .1
+            t += .01
             pointList.append((tx, ty))
         return pointList
 

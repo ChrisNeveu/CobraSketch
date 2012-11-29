@@ -25,7 +25,6 @@ class Layer:
         '''Draws the layer to the specified batch object'''
         for stroke in self.strokes:
             for point in stroke:
-                print(point)
                 self.drawPoint(point[0],point[1],bitmap)
 
     def _2dTo1d(self, x, y):
