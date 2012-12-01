@@ -65,8 +65,8 @@ class History:
 h = History()
 x = Stroke([2,3,5,1,2,3,5,3],6)
 y = Stroke((5,3), 5)
-layer = Layer('newLayer', 2, 5)
-
+#layer = Layer('newLayer', 2, 5,"lulz")
+'''
 newAction = Action()
 newAction.name = 'Stroke ', 1
 act1 = Action()
@@ -80,7 +80,7 @@ h.addAction(act1)
 h.addAction(newAction)
 h.addAction(actStroke)
 h.undoAction(h.index[2])
-
+'''
 
 
     

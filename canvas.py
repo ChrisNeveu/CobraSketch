@@ -39,9 +39,6 @@ class Canvas:
         self.windowWidth = 800
         self.windowHeight = 600
 
-        self.layers.append(Layer("Layer 1",self.width,self.height))
-        self.currentLayer = self.layers[0]
-
         self.curStroke = []
 
         self.pointQueue = deque([])
@@ -52,9 +49,13 @@ class Canvas:
 
         self._buildCanvas(self.canvas)
 
+        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch))
+        self.currentLayer = self.layers[0]
+        self.swap = Layer("Swap",self.width, self.height,self.batch)
+
     def draw(self):
         for layer in self.layers:
-            layer.applyTo(self.canvas)
+            layer.draw(canvas)
         self.batch.draw()
 
     def _buildCanvas(self, canvas):
@@ -83,6 +84,10 @@ class Canvas:
 
     def endLine(self, x, y):
         #SEND CURSTROKE TO LAYER, CLEAR CANVAS.COLORS -> Ryan
+        finalStroke = Stroke(self.curStroke,255)
+        # Draw the remaining points
+        curPoint = self.pointQueue.popleft()
+        self.drawPoint(curPoint[0], curPoint[1])
         curPoint = self.pointQueue.popleft()
         self.drawPoint(curPoint[0], curPoint[1])
         
@@ -90,7 +95,7 @@ class Canvas:
     def drawPoint(self, x, y):
         for i in range(0, 2):
             for j in range(0, 2):
-                self.canvas.colors[((y+i)*self.width+x+j)*3:((y+i)*self.width+x+j)*3+3] = [0, 0, 0]
+                self.swap.addPoint(x,y)
 
     def _2dTo1d(self, x, y):
         '''_2dTo1d converts the coordinates for a 2d array to a corresponding
