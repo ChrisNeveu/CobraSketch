@@ -8,15 +8,19 @@ class Brush:
     shade = float
 
     def __init__(self, s, tex, sha):
+        '''Constructor'''
         self.size = s
         self.texture = tex
-        self.shape = sha
+        self.shade = sha
 
-    def setSize(self, newsize):
-        self.size = newsize
+    def setSize(self, newSize):
+        '''Resizes the brush'''
+        self.size = newSize
 
-    def setShade(self, newshade):
-        self.shade = newshade
+    def setShade(self, newShade):
+        '''Changes the shade of the brush'''
+        self.shade = newShade
 
-    def setTexture(self, newtex):
-        self.texture = newtex
+    def setTexture(self, newTex):
+        '''Changes the texture of the brush'''
+        self.texture = newTex
