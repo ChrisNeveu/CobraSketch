@@ -54,8 +54,11 @@ class Canvas:
         self.swap = Layer("Swap",self.width, self.height,self.batch)
 
     def draw(self):
+        '''
         for layer in self.layers:
-            layer.draw(canvas)
+            layer.draw(canvas) 
+        self.swap.draw(canvas)
+        '''
         self.batch.draw()
 
     def _buildCanvas(self, canvas):
@@ -90,12 +93,18 @@ class Canvas:
         self.drawPoint(curPoint[0], curPoint[1])
         curPoint = self.pointQueue.popleft()
         self.drawPoint(curPoint[0], curPoint[1])
+
+        #Clear the swap layer
+        self.swap = Layer("Swap",self.width, self.height,self.batch)
         
 
     def drawPoint(self, x, y):
         for i in range(0, 2):
             for j in range(0, 2):
-                self.swap.addPoint(x,y)
+                self.canvas = self.batch.add(1, gl.GL_POINTS, None,
+                    ('v2i', (x, y)),
+                    ('c3B', (0, 0, 0))
+                )
 
     def _2dTo1d(self, x, y):
         '''_2dTo1d converts the coordinates for a 2d array to a corresponding

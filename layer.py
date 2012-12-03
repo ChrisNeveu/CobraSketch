@@ -20,6 +20,7 @@ class Layer:
         self.width = width
         self.height = height
 
+        self.batch = batch
         self.canvas = batch.add(self.width*self.height,
                                      gl.GL_POINTS,None,
                                      ('v2i'), ('c3B'))
@@ -44,15 +45,11 @@ class Layer:
     def addPoint(self, x, y):
         for i in range(0, 2):
             for j in range(0, 2):
-                newLen = len(self.canvas.vertices)
-                newShape = (newLen+2,1)
-                self.canvas.vertices.resize(newShape)
-                self.canvas.vertices[newLen-2:newLen] = [x, y]
+                self.canvas = self.batch.add(1, gl.GL_POINTS, None,
+                    ('v2i', (x, y)),
+                    ('c3B', (0, 0, 0))
+                )
 
-                newLen = len(self.canvas.colors)
-                newShape = (newLen+3,1)
-                self.canvas.colors.resize(newShape)
-                self.canvas.colors[newLen-3:newLen] = [0, 0, 0]
                 
 
 
