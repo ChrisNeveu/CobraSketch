@@ -39,7 +39,7 @@ class History:
         '''get list of history action'''
         z = 0
         for z in range (0, self.x):
-            print (self.index[z])
+            print (self.index2[z])
         #return self.index2
     
     #add an action to history

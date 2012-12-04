@@ -10,6 +10,8 @@ from history import History
 from layer import Layer
 from stroke import Stroke
 
+
+
 class Canvas:
     '''Canvas Class'''
     width = int
@@ -18,6 +20,7 @@ class Canvas:
     referenceY = int
     windowWidth = int
     windowHeight = int
+    
 
     layers = []
     
@@ -41,6 +44,7 @@ class Canvas:
 
         self.curStroke = []
         self.brush = Brush(2,"Nope",110)
+        self.his = History()
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
@@ -55,7 +59,12 @@ class Canvas:
 
         self.layers.append(Layer("Layer 1",self.width,self.height,self.batch,self.foreground))
         self.currentLayer = self.layers[0]
+        
         self.swap = Layer("Swap",self.width, self.height,self.batch,self.foreground)
+        layerAction = Action()
+        layerAction.layer = self.currentLayer
+        layerAction.name = self.currentLayer.name
+        self.his.addAction(layerAction)
 
     def draw(self):        
         self.batch.draw()
@@ -85,7 +94,7 @@ class Canvas:
 
 
     def endLine(self, x, y):
-        
+        '''Saves the end of a stroke to layer'''        
         # Why didn't we do this earlier >_>
         while(len(self.pointQueue) > 0):
             curPoint = self.pointQueue.popleft()
@@ -95,9 +104,14 @@ class Canvas:
 
         #If the stroke is complete, clear the swap layer
         #and draw it from the appropriate layer
+        newAction = Action()
+        newAction.name = 'Stroke'
         finalStroke = Stroke(self.curStroke,255)
+        newAction.stroke = finalStroke
         self.canvas.colors = [255,255,255]*self.width*self.height
         self.currentLayer.addStroke(finalStroke,self.brush)
+        self.his.addAction(newAction)
+        #self.his.getHistory()
 
     def drawPoint(self, x, y):
         for i in range(0, self.brush.size):
