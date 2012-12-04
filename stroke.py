@@ -20,5 +20,11 @@ class Stroke:
     def getVisibility(self):
         '''Gets the current visibility'''
         return self.vis
+
+    def getPoints(self):
+        return self.stroke
+
+    def size(self):
+        return len(self.stroke)
     
 

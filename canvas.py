@@ -40,25 +40,24 @@ class Canvas:
         self.windowHeight = 600
 
         self.curStroke = []
+        self.brush = Brush(2,"Nope",110)
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
+        self.background = graphics.OrderedGroup(0)
+        self.foreground = graphics.OrderedGroup(1)
+        
         self.canvas = self.batch.add(self.width*self.height,
-                                     gl.GL_POINTS,None,
+                                     gl.GL_POINTS, self.background,
                                      ('v2i'), ('c3B'))
 
         self._buildCanvas(self.canvas)
 
-        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch))
+        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch,self.foreground))
         self.currentLayer = self.layers[0]
-        self.swap = Layer("Swap",self.width, self.height,self.batch)
+        self.swap = Layer("Swap",self.width, self.height,self.batch,self.foreground)
 
-    def draw(self):
-        '''
-        for layer in self.layers:
-            layer.draw(canvas) 
-        self.swap.draw(canvas)
-        '''
+    def draw(self):        
         self.batch.draw()
 
     def _buildCanvas(self, canvas):
@@ -86,26 +85,26 @@ class Canvas:
 
 
     def endLine(self, x, y):
-        #SEND CURSTROKE TO LAYER, CLEAR CANVAS.COLORS -> Ryan
-        finalStroke = Stroke(self.curStroke,255)
-        # Draw the remaining points
-        curPoint = self.pointQueue.popleft()
-        self.drawPoint(curPoint[0], curPoint[1])
-        curPoint = self.pointQueue.popleft()
-        self.drawPoint(curPoint[0], curPoint[1])
-
-        #Clear the swap layer
-        self.swap = Layer("Swap",self.width, self.height,self.batch)
+        
+        # Why didn't we do this earlier >_>
+        while(len(self.pointQueue) > 0):
+            curPoint = self.pointQueue.popleft()
+            self.drawPoint(curPoint[0], curPoint[1])
+            self.curStroke.append(curPoint)
         
 
-    def drawPoint(self, x, y):
-        for i in range(0, 2):
-            for j in range(0, 2):
-                self.canvas = self.batch.add(1, gl.GL_POINTS, None,
-                    ('v2i', (x, y)),
-                    ('c3B', (0, 0, 0))
-                )
+        #If the stroke is complete, clear the swap layer
+        #and draw it from the appropriate layer
+        finalStroke = Stroke(self.curStroke,255)
+        self.canvas.colors = [255,255,255]*self.width*self.height
+        self.currentLayer.addStroke(finalStroke,self.brush)
 
+    def drawPoint(self, x, y):
+        for i in range(0, self.brush.size):
+            for j in range(0, self.brush.size):
+                self.canvas.colors[((y+i)*self.width+x+j)*3:((y+i)*self.width+x+j)*3+3] = [self.brush.shade]* 3
+
+                
     def _2dTo1d(self, x, y):
         '''_2dTo1d converts the coordinates for a 2d array to a corresponding
         1d array index'''
