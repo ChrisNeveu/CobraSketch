@@ -41,7 +41,7 @@ class CobraSketch:
 
         #Import theme
         self.cobalt = kytten.Theme(os.path.join(os.getcwd(), 'theme'), override={
-            "font_size": 12
+            "font_size": 10
         })   
         self.bg_group = pyglet.graphics.OrderedGroup(0)
         self.fg_group = pyglet.graphics.OrderedGroup(1)
@@ -105,203 +105,12 @@ class CobraSketch:
     def on_escape(self, dialog):
         dialog.teardown()
 
-    def create_document_dialog(self):
-        document = pyglet.text.decode_attributed('''
-            With {bold True}kytten{bold False}, you can harness the power of
-            {underline (255, 255, 255, 255)}pyglet{underline None}'s documents in a
-            scrollable window!
-
-            {font_name "Courier New"}Change fonts{font_name Lucia Grande},
-            {italic True}italicize your text,{italic False} and more!
-
-            {align "center"}Center yourself!{align "left"}{}
-            {align "right"}Or go right.{align "left"}
-
-            {color (128, 255, 128, 255)}
-            Express
-            {color (255, 128, 128, 255)}
-            yourself
-            {color (128, 128, 255, 255)}
-            colorfully!
-            {color (255, 255, 255, 255}
-            ''')
-
-        dialog = kytten.Dialog(
-            kytten.Frame(
-                kytten.Document(document, width=300, height=150)
-            ),
-            window=self.window, batch=self.canvas.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_CENTER,
-            theme=self.cobalt, on_escape=self.on_escape)
-
-    def create_form_dialog(self):
-        dialog = None
-        def on_enter(dialog):
-            print("Form submitted!")
-            for key, value in dialog.get_values().items():
-                print("  %s=%s" % (key, value))
-            self.on_escape(dialog)
-        def on_submit():
-            on_enter(dialog)
-        def on_cancel():
-            print("Form canceled.")
-            self.on_escape(dialog)
-        dialog = kytten.Dialog(
-            kytten.Frame(
-                kytten.Scrollable(
-                    kytten.VerticalLayout([
-                        kytten.SectionHeader("Personnel Data",
-                                             align=kytten.HALIGN_LEFT),
-                        kytten.Document("Try tabbing through fields, "
-                                        "if offscreen they'll be moved "
-                                        "automatically",
-                                        width=500),
-                        kytten.GridLayout([
-                            [kytten.Label("Name"), kytten.Input("name", "Lynx",
-                                                                max_length=20)],
-                            [kytten.Label("Job"), kytten.Input("job", "Cat",
-                                                               max_length=80)],
-                            [kytten.Label("Hobby"),
-                                 kytten.Input("hobby", "Programming")],
-                            [kytten.Label("Class"),
-                                 kytten.Input("class", "Druid")],
-                            [kytten.Label("Disabled"),
-                                 kytten.Input("disabled", "Disabled input",
-                                              disabled=True)],
-                            [kytten.Label("Sign"),
-                                 kytten.Input("sign", "Free to good home")],
-                            [kytten.Label("Blood Type"),
-                                 kytten.Input("bloodtype", "Red")],
-                            [kytten.Label("Favored Weapon"),
-                                 kytten.Input("weapon", "Claws")],
-                        ]),
-                        kytten.Checkbox("Full-Time", id="fulltime"),
-                        kytten.Checkbox("Married", id="married", disabled=True),
-                        kytten.SectionHeader("Actions",
-                                             align=kytten.HALIGN_LEFT),
-                        kytten.HorizontalLayout([
-                            kytten.Button("Submit", on_click=on_submit),
-                            kytten.Button("Disabled", disabled=True),
-                            None,
-                            kytten.Button("Cancel", on_click=on_cancel),
-                        ]),
-                    ], align=kytten.HALIGN_LEFT),
-                    height=200, width=360)
-            ),
-            window=self.window, batch=self.canvas.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_CENTER,
-            theme=self.cobalt, on_enter=on_enter, on_escape=self.on_escape)
-
-    def create_scrollable_dialog(self):
-        def on_select(choice):
-            print("Kytten is %s" % choice)
-
-        def on_set(value):
-            print("Kytten rating is %0.0f" % value)
-
-        dialog = kytten.Dialog(
-            kytten.Frame(
-                kytten.Scrollable(
-                    kytten.VerticalLayout([
-                        kytten.Label("Rate Kytten from 1 to 10:"),
-                        kytten.Slider(7.0, 1.0, 10.0, steps=9, on_set=on_set),
-                        kytten.Label("This slider is disabled:"),
-                        kytten.Slider(1.0, 1.0, 10.0, steps=9, on_set=on_set,
-                                      disabled=True),
-                        kytten.Label("Kytten is..."),
-                        kytten.Menu(options=["Awesome",
-                                             "Cute",
-                                             "-Disabled Option",
-                                             "Excellent",
-                                             "Fantastic",
-                                             "Great",
-                                             "Supercalifragilistiexpialidocious",
-                                             "Terrific"],
-                                    align=kytten.HALIGN_LEFT, on_select=on_select),
-                    ], align=kytten.HALIGN_LEFT),
-                width=200, height=150)
-            ),
-            window=self.window, batch=self.canvas.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_CENTER,
-            theme=self.cobalt, on_escape=self.on_escape)
-
-    def create_folding_dialog(self):
-        document1 = pyglet.text.decode_attributed("""
-            Click on the section headers below to open them up.
-            Jellicle Cats is, of course, copyrighted by T. S. Eliot.
-            """)
-        document2 = pyglet.text.decode_attributed("""
-            Jellicle cats come out tonight{}
-            Jellicle cats come one, come all{}
-            The Jellicle moon is shining bright{}
-            Jellicles come to the Jellicle ball
-            """)
-        document3 = pyglet.text.decode_attributed("""
-            Jellicle cats are black and white{}
-            Jellicle cats are rather small{}
-            Jellicle cats are merry and bright{}
-            And pleasant to hear when we caterwaul
-            """)
-        document4 = pyglet.text.decode_attributed("""
-            Jellicle cats have cheerful faces{}
-            Jellicle cats have bright black eyes{}
-            We like to practice our airs and graces{}
-            And wait for the Jellicle moon to rise
-            """)
-
-        dialog = kytten.Dialog(
-            kytten.Frame(
-                kytten.Scrollable(
-                    kytten.VerticalLayout([
-                        kytten.SectionHeader("Jellicle Cats"),
-                        kytten.Document(document1, width=300),
-                        kytten.FoldingSection("Verse 1",
-                            kytten.VerticalLayout([
-                                kytten.Document(document2, width=300),
-                            ])),
-                        kytten.FoldingSection("Verse 2",
-                            kytten.VerticalLayout([
-                                kytten.Document(document3, width=300),
-                            ]), is_open=False),
-                        kytten.FoldingSection("Verse 3",
-                            kytten.VerticalLayout([
-                                kytten.Document(document4, width=300),
-                            ]), is_open=False),
-                    ], align=kytten.HALIGN_LEFT),
-                height=400)
-            ),
-            window=self.window, batch=self.canvas.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_CENTER,
-            theme=self.cobalt, on_escape=self.on_escape)
-
-    def create_dropdown_dialog(self):
-        def on_select(choice):
-            print("Selected: %s" % choice)
-
-        dialog = kytten.Dialog(
-            kytten.Frame(
-                kytten.VerticalLayout([
-                    kytten.Label("Select a letter:"),
-                    kytten.Dropdown(['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon',
-                                     'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa',
-                                     'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron',
-                                     'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon',
-                                     'Phi', 'Chi', 'Psi', 'Omega'],
-                                    on_select=on_select),
-                    kytten.Label("This dropdown is disabled"),
-                    kytten.Dropdown(['Disabled', 'Enabled'], disabled=True),
-                ]),
-            ),
-            window=self.window, batch=self.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_CENTER,
-            theme=self.cobalt, on_escape=self.on_escape)
-
     def create_file_load_dialog(self):
         dialog = None
 
         def on_select(filename):
             print("File load: %s" % filename)
-            on_escape(dialog)
+            self.on_escape(dialog)
 
         dialog = kytten.FileLoadDialog(  # by default, path is current working dir
             extensions=['.png', '.jpg', '.bmp', '.gif'],
@@ -322,12 +131,12 @@ class CobraSketch:
             anchor=kytten.ANCHOR_CENTER,
             theme=self.cobalt, on_escape=self.on_escape, on_select=on_select)
 
-    def create_directory_select_dialog():
+    def create_directory_select_dialog(self):
         dialog = None
 
         def on_select(filename):
             print("Directory: %s" % filename)
-            on_escape(dialog)
+            self.on_escape(dialog)
 
         dialog = kytten.DirectorySelectDialog(
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
@@ -335,19 +144,9 @@ class CobraSketch:
             theme=self.cobalt, on_escape=self.on_escape, on_select=on_select)
 
     def on_select(self, choice):
-        if choice == 'Document':
-            self.create_document_dialog()
-        elif choice == 'Form':
-            self.create_form_dialog()
-        elif choice == 'Scrollable':
-            self.create_scrollable_dialog()
-        elif choice == 'Folding':
-            self.create_folding_dialog()
-        elif choice == 'Dropdown':
-            self.create_dropdown_dialog()
-        elif choice == 'File Load':
+        if choice == 'Open File':
             self.create_file_load_dialog()
-        elif choice == 'File Save':
+        elif choice == 'Save File':
             self.create_file_save_dialog()
         elif choice == 'Directory Select':
             self.create_directory_select_dialog()
@@ -358,18 +157,19 @@ class CobraSketch:
         # Set up a Dialog to choose test dialogs to show
         dialog = kytten.Dialog(
             kytten.Frame(
-                kytten.VerticalLayout([
-                    kytten.Label("Select dialog to show"),
-                    kytten.Menu(options=["Document", "Form", "Scrollable",
-                                         "Folding", "Dropdown",
-                                         "File Load", "File Save",
-                                         "Directory Select"],
-                                on_select=self.on_select),
-                ]),
+                kytten.HorizontalLayout([
+                    kytten.Dropdown(['Save File', 'Open File'],
+                                    on_select=self.on_select, text="File"),
+                    kytten.Dropdown(['Copy', 'Cut', 'Paste'],
+                                    on_select=self.on_select, text="Edit"),
+                    kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
+                                    on_select=self.on_select, text="Brush"),
+                ])
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
             anchor=kytten.ANCHOR_TOP_LEFT,
             theme=self.cobalt)
+
 
 sketch = CobraSketch()
 
