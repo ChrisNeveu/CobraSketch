@@ -87,7 +87,6 @@ class CobraSketch:
 
     def on_mouse_release(self, x, y, button, modifiers):
         '''Event handler for mouse release.'''
-        print("GJEIRFJDIF")
         self.canvas.endLine(x, y)
 
     def on_draw(self):

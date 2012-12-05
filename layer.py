@@ -47,8 +47,6 @@ class Layer:
         newSize = int(len(self.canvas.vertices)/2.0)+(points.size()*(brush.size*brush.size))
         self.canvas.resize(newSize)
 
-        print(newSize, points.size(), brush.size)
-
         #prepare for moar lagz
         for point in points.getPoints():
             for i in range(0, brush.size):
@@ -85,6 +83,10 @@ class Layer:
 
     def resizeLayer(self, top, right, bottom, left):
         '''Resizes the layer based on the points added to the top/right/left/bottom'''
+
+    def getGroup():
+        '''Returns the group index number for rearranging layers'''
+        return group
             
 
     def printVals(self):

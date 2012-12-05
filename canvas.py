@@ -23,6 +23,7 @@ class Canvas:
     
 
     layers = []
+    order = []
     
     name = ""
     filepath = "unnamed.cobra"
@@ -49,7 +50,7 @@ class Canvas:
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
         self.background = graphics.OrderedGroup(0)
-        self.foreground = graphics.OrderedGroup(1)
+        self.layer1 = graphics.OrderedGroup(1)
         
         self.canvas = self.batch.add(self.width*self.height,
                                      gl.GL_POINTS, self.background,
@@ -57,10 +58,10 @@ class Canvas:
 
         self._buildCanvas(self.canvas)
 
-        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch,self.foreground))
+        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch,self.layer1))
         self.currentLayer = self.layers[0]
+        self.order.append(1)
         
-        self.swap = Layer("Swap",self.width, self.height,self.batch,self.foreground)
         layerAction = Action()
         layerAction.layer = self.currentLayer
         layerAction.name = self.currentLayer.name
@@ -77,6 +78,14 @@ class Canvas:
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
+    def addLayer(self, name, index):
+        '''Something goes here'''
+        newGroup = graphics.OrderedGroup(index)
+        self.layers.append(Layer(name, self.width, self.height, self.batch,newGroup))
+        self.currentLayer = self.layers[len(self.layers)-1]
+        self.brush.setShade(self.brush.shade-10)
+        self.brush.setSize(self.brush.size+1)
+
     def addPoint(self, x, y):
         self.pointQueue.append((x, y))
         if (len(self.pointQueue) > 2):
@@ -92,9 +101,7 @@ class Canvas:
             self.curStroke.append(curPoint)                
             self.drawPoint(curPoint[0], curPoint[1])
 
-
     def endLine(self, x, y):
-        print("ASKFAJIDSFIADSF")
         '''Saves the end of a stroke to the current layer'''        
         while(len(self.pointQueue) > 0):
             curPoint = self.pointQueue.popleft()
@@ -102,16 +109,20 @@ class Canvas:
             self.curStroke.append(curPoint)
         
 
-        #If the stroke is complete, clear the swap layer
-        #and draw it from the appropriate layer
+        #Add the current stroke to the history and the layer
         newAction = Action()
         newAction.name = 'Stroke'
         finalStroke = Stroke(self.curStroke,255)
-        newAction.stroke = finalStroke
-        self.canvas.colors = [255,255,255]*self.width*self.height
         self.currentLayer.addStroke(finalStroke,self.brush)
+        newAction.stroke = finalStroke
         self.his.addAction(newAction)
-        #self.his.getHistory()
+
+        #Clear the canvas and the temporary stroke
+        self.canvas.colors = [255,255,255]*self.width*self.height
+        self.curStroke = []
+
+        #Testing out new layer
+        self.addLayer("newlayer", self.order[len(self.order)-1]+1)
 
     def drawPoint(self, x, y):
         for i in range(0, self.brush.size):
