@@ -94,8 +94,8 @@ class Canvas:
 
 
     def endLine(self, x, y):
-        '''Saves the end of a stroke to layer'''        
-        # Why didn't we do this earlier >_>
+        print("ASKFAJIDSFIADSF")
+        '''Saves the end of a stroke to the current layer'''        
         while(len(self.pointQueue) > 0):
             curPoint = self.pointQueue.popleft()
             self.drawPoint(curPoint[0], curPoint[1])

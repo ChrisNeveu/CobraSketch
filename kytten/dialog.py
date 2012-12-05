@@ -361,7 +361,8 @@ class Dialog(Wrapper, DialogEventManager):
     """
     def __init__(self, content=None, window=None, batch=None, group=None,
                  anchor=ANCHOR_CENTER, offset=(0, 0), parent=None,
-                 theme=None, movable=True, on_enter=None, on_escape=None):
+                 theme=None, movable=True, on_enter=None, on_escape=None, 
+	       on_mouse_release=None):
         """
         Creates a new dialog.
 
@@ -399,6 +400,7 @@ class Dialog(Wrapper, DialogEventManager):
         self.is_movable = movable
         self.on_enter = on_enter
         self.on_escape = on_escape
+        self.on_mouse_release = on_mouse_release
         if batch is None:
             self.batch = pyglet.graphics.Batch()
             self.own_batch = True
@@ -540,6 +542,8 @@ class Dialog(Wrapper, DialogEventManager):
         @param modifiers Modifiers to apply to button
         """
         self.is_dragging = False
+        if self.on_mouse_release is not None:
+            self.on_mouse_release(x, y, button, modifiers)
         return DialogEventManager.on_mouse_release(self, x, y,
                                                    button, modifiers)
 
