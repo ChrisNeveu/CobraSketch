@@ -202,7 +202,7 @@ class Menu(VerticalLayout):
         VerticalLayout.teardown(self)
 
 class Dropdown(Control):
-    def __init__(self, options=[], selected=None, id=None,
+    def __init__(self, options=[], text=None, selected=None, id=None,
                  max_height=400, align=VALIGN_TOP, on_select=None,
                  disabled=False):
         assert options
@@ -216,6 +216,7 @@ class Dropdown(Control):
 
         self.field = None
         self.label = None
+        self.text = text
         self.pulldown_menu = None
 
     def _delete_pulldown_menu(self):
@@ -327,7 +328,11 @@ class Dropdown(Control):
                 color,
                 dialog.batch, dialog.bg_group)
         if self.label is None:
-            self.label = KyttenLabel(self.selected,
+            if self.text is not None:
+                labelText = self.text
+            else:
+                labelText = self.selected
+            self.label = KyttenLabel(labelText,
                 font_name=dialog.theme['dropdown']['font'],
                 font_size=dialog.theme['dropdown']['font_size'],
                 color=dialog.theme['dropdown']['text_color'],
