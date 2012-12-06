@@ -45,20 +45,27 @@ class Canvas:
 
         self.curStroke = []
         self.brush = Brush(2,"Nope",110)
+        self.eraser = False
         self.his = History()
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
         self.background = graphics.OrderedGroup(0)
+        self.drawingLayer = graphics.OrderedGroup(5)
         self.layer1 = graphics.OrderedGroup(1)
         
         self.canvas = self.batch.add(self.width*self.height,
                                      gl.GL_POINTS, self.background,
                                      ('v2i'), ('c3B'))
-
+        self.swap = self.batch.add(self.width*self.height,
+                                     gl.GL_POINTS, self.drawingLayer,
+                                     ('v2i'), ('c3B'))
+        
         self._buildCanvas(self.canvas)
+        self._buildSwap(self.swap)
 
         self.layers.append(Layer(self.width,self.height,self.batch,self.layer1,0))
+        
         self.currentLayer = self.layers[0]
         self.order.append(1)
         
@@ -78,6 +85,12 @@ class Canvas:
                 i = self._2dTo1d(x, y)
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
+                
+    def _buildSwap(self, swap):
+        for i in range(self.width*self.height):
+            '''We have to convert our 2d coordinates into a 1d array index'''
+            swap.vertices[i*2:i*2+2] = [0,0]
+            swap.colors[i*3:i*3+3] = [0,0,0]
 
     def setBrushSize(self, command):
         if(command == 'Increase Brush Size'):
@@ -124,9 +137,6 @@ class Canvas:
         '''Decrements a layer's drawing order by one'''
         if(self.order[layerIndex] > 0):
             self.setLayer(layerIndex, self.order[layerIndex]-1)
-
-    def erasePoint(self,x,y):
-        '''shell for eraser function '''
         
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
@@ -152,6 +162,10 @@ class Canvas:
                 curPoint = self.pointQueue.popleft()
                 self.drawPoint(curPoint[0], curPoint[1])
                 self.curStroke.append(curPoint)
+
+            #Debug stuff
+            print(self.eraser)
+            self.eraser = not self.eraser
             
 
             #Add the current stroke to the history and the layer
@@ -163,14 +177,24 @@ class Canvas:
             self.his.addAction(newAction)
 
             #Clear the canvas and the temporary stroke
-            self.canvas.colors = [255,255,255]*self.width*self.height
+            self.swap.colors = [255,255,255]*self.width*self.height
+            self.swap.vertices = [0,0]*self.width*self.height
             self.curStroke = []
 
     def drawPoint(self, x, y):
         '''Draws a point directly on the swap canvas'''
         for i in range(0, self.brush.size):
-            row = [self.brush.shade]* 3 * self.brush.size
-            self.canvas.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = row
+            colorRow = []
+            vertRow = []
+            for q in range(0, self.brush.size):
+                vertRow.append(x+q)
+                vertRow.append(y+i)
+            if(not self.eraser):
+                colorRow = [self.brush.shade]* 3 * self.brush.size
+            else:
+                colorRow = [255]* 3 * self.brush.size
+            self.swap.vertices[((y+i)*self.width+x)*2:((y+i)*self.width+x)*2+2*self.brush.size] = vertRow
+            self.swap.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = colorRow
 
                 
     def _2dTo1d(self, x, y):
