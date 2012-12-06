@@ -44,7 +44,7 @@ class CobraSketch:
             "font_size": 10
         })   
         self.bg_group = pyglet.graphics.OrderedGroup(0)
-        self.fg_group = pyglet.graphics.OrderedGroup(1)
+        self.fg_group = pyglet.graphics.OrderedGroup(2)
 
         #Create GUI
         self.mainDialog()
