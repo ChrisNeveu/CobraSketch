@@ -48,6 +48,7 @@ class CobraSketch:
 
         #Create GUI
         self.mainDialog()
+        self.layerDialog()
 
 
     # # # # # # # # # # # # # #
@@ -173,19 +174,25 @@ class CobraSketch:
 
     def layerDialog(self):
         # Set up a Dialog to choose test dialogs to show
+        layers = ['layer 1', 'layer 2', 'layer 3']
+        content = [item for sublist in
+                   [
+                       [kytten.HorizontalLayout([
+                           kytten.Checkbox(layer, is_checked=True),
+                           kytten.Button("^"),
+                           kytten.Button("v"),
+                           kytten.Button("X")
+                           ])
+                        ] for layer in layers]
+                   for item in sublist]
         dialog = kytten.Dialog(
             kytten.Frame(
-                kytten.VerticalLayout([
-                    kytten.Dropdown(['Save File', 'Open File'],
-                                    on_select=self.on_select, text="File"),
-                    kytten.Dropdown(['Copy', 'Cut', 'Paste'],
-                                    on_select=self.on_select, text="Edit"),
-                    kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
-                                    on_select=self.on_select, text="Brush"),
-                ], padding=0, align=kytten.VALIGN_TOP)
+                kytten.VerticalLayout(
+                    content,
+                    padding=0, align=kytten.VALIGN_TOP)
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
-            anchor=kytten.ANCHOR_TOP_LEFT,
+            anchor=kytten.ANCHOR_TOP_RIGHT,
             theme=self.cobalt)
 
 
