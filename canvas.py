@@ -79,7 +79,7 @@ class Canvas:
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
-    def addLayer(self, command):
+    def addLayer(self):
         self._addLayer()
 
     def setCurrentLayer(self, index):

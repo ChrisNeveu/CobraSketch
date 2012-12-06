@@ -153,6 +153,7 @@ class CobraSketch:
             self.create_directory_select_dialog()
         else:
             print("Unexpected menu selection: %s" % choice)
+        
 
     def mainDialog(self):
         # Set up a Dialog to choose test dialogs to show
@@ -175,6 +176,11 @@ class CobraSketch:
             theme=self.cobalt)
 
     def layerDialog(self):
+        def createLayer():
+            self.canvas.addLayer()
+            dialog.teardown()
+            self.layerDialog()
+
         # Set up a Dialog to choose test dialogs to show
         content = [item for sublist in
                    [
@@ -187,6 +193,7 @@ class CobraSketch:
                            ])
                         ] for layer in self.canvas.layers]
                    for item in sublist]
+        content.append(kytten.Button("Create Layer", on_click=createLayer))
         dialog = kytten.Dialog(
             kytten.Frame(
                 kytten.VerticalLayout(
