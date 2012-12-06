@@ -13,14 +13,16 @@ class Layer:
     points = []
     transparent = ""
 
-    def __init__(self, name, width, height, batch, group):
+    def __init__(self, width, height, batch, group, index, name="Untitled Layer", ):
         '''Constructs Layer Object'''
         self.visible = True
         self.name = name
         self.width = width
         self.height = height
+        self.index = index
 
         self.batch = batch
+        self.group = group
         self.canvas = batch.add(1, gl.GL_POINTS, group, ('v2i'), ('c3B'))
 
 ##        for x in range(self.width):
@@ -35,11 +37,19 @@ class Layer:
         1d array index'''
         return y*self.width+x
 
-    def draw(self, canvas):
-        '''Applies vertices and stuff to the canvas'''
-        
-
+    def toggleVisibility(self):
+        '''Toggles the visibility of this layer'''
+        if(self.visible is True):
+            self.hiddenColors = self.canvas.colors
+            self.hiddenVerts = self.canvas.vertices
+            self.canvas.delete()
+        else:
+            self.canvas = batch.add(1,gl.GL_POINTS, self.group, ('v2i'), ('c3B'))
+            self.canvas.colors = self.hiddenColors
+            self.canvas.vertices = self.hiddenVerts
             
+        self.visible = not self.visible
+                    
     def addStroke(self, points, brush):
         '''Adds a stroke to the canvas, drawing the appropriate pixels. The stroke is not saved'''
         vertexStep = len(self.canvas.vertices)

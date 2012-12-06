@@ -58,7 +58,7 @@ class Canvas:
 
         self._buildCanvas(self.canvas)
 
-        self.layers.append(Layer("Layer 1",self.width,self.height,self.batch,self.layer1))
+        self.layers.append(Layer(self.width,self.height,self.batch,self.layer1,0))
         self.currentLayer = self.layers[0]
         self.order.append(1)
         
@@ -82,7 +82,7 @@ class Canvas:
     def addLayer(self, name, index):
         '''Adds a new layer to the canvas, and selects it as the current canvas'''
         newGroup = graphics.OrderedGroup(index)
-        self.layers.append(Layer(name, self.width, self.height, self.batch,newGroup))
+        self.layers.append(Layer(self.width, self.height, self.batch,newGroup,len(self.layers)))
         self.currentLayer = self.layers[len(self.layers)-1]
 
     def setLayer(self, layerIndex, orderValue):
