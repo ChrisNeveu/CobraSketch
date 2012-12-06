@@ -25,7 +25,7 @@ class History:
         if (undo.stroke.vis == True):
             undo.stroke.setVisibility(False)
         if (undo.layer.visible == True):
-            undo.layer.visible = False
+            undo.layer.toggleVisibility()
             
     #redo an Action
     def redoAction(self, redo):
@@ -33,7 +33,7 @@ class History:
         if (redo.stroke.vis == False):
             redo.stroke.setVisibility(True)
         if (redo.layer.visible == False):
-            redo.layer.visible = True
+            redo.layer.toggleVisibility()
                 
     def getHistory(self):
         '''get list of history action'''
