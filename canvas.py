@@ -114,39 +114,41 @@ class Canvas:
 
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
-        self.pointQueue.append((x, y))
-        if (len(self.pointQueue) > 2):
-            curPoint = self.pointQueue.popleft()
-            lineS = self._interpolate(curPoint[0], curPoint[1],
-                                      self.pointQueue[0][0],
-                                      self.pointQueue[0][1],
-                                      self.pointQueue[1][0],
-                                      self.pointQueue[1][1])
-            for point in lineS:
-                self.curStroke.append(point)
-                self.drawPoint(point[0], point[1])
-            self.curStroke.append(curPoint)                
-            self.drawPoint(curPoint[0], curPoint[1])
+        if(self.currentLayer.visible):
+            self.pointQueue.append((x, y))
+            if (len(self.pointQueue) > 2):
+                curPoint = self.pointQueue.popleft()
+                lineS = self._interpolate(curPoint[0], curPoint[1],
+                                          self.pointQueue[0][0],
+                                          self.pointQueue[0][1],
+                                          self.pointQueue[1][0],
+                                          self.pointQueue[1][1])
+                for point in lineS:
+                    self.curStroke.append(point)
+                    self.drawPoint(point[0], point[1])
+                self.curStroke.append(curPoint)                
+                self.drawPoint(curPoint[0], curPoint[1])
 
     def endLine(self, x, y):
-        '''Saves the end of a stroke to the current layer'''        
-        while(len(self.pointQueue) > 0):
-            curPoint = self.pointQueue.popleft()
-            self.drawPoint(curPoint[0], curPoint[1])
-            self.curStroke.append(curPoint)
-        
+        '''Saves the end of a stroke to the current layer'''
+        if(self.currentLayer.visible):
+            while(len(self.pointQueue) > 0):
+                curPoint = self.pointQueue.popleft()
+                self.drawPoint(curPoint[0], curPoint[1])
+                self.curStroke.append(curPoint)
+            
 
-        #Add the current stroke to the history and the layer
-        newAction = Action()
-        newAction.name = 'Stroke'
-        finalStroke = Stroke(self.curStroke,255)
-        self.currentLayer.addStroke(finalStroke,self.brush)
-        newAction.stroke = finalStroke
-        self.his.addAction(newAction)
+            #Add the current stroke to the history and the layer
+            newAction = Action()
+            newAction.name = 'Stroke'
+            finalStroke = Stroke(self.curStroke,255)
+            self.currentLayer.addStroke(finalStroke,self.brush)
+            newAction.stroke = finalStroke
+            self.his.addAction(newAction)
 
-        #Clear the canvas and the temporary stroke
-        self.canvas.colors = [255,255,255]*self.width*self.height
-        self.curStroke = []
+            #Clear the canvas and the temporary stroke
+            self.canvas.colors = [255,255,255]*self.width*self.height
+            self.curStroke = []
 
     def drawPoint(self, x, y):
         '''Draws a point directly on the swap canvas'''

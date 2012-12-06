@@ -37,7 +37,10 @@ class Layer:
         1d array index'''
         return y*self.width+x
 
-    def toggleVisibility(self):
+    def toggleVisibility(self, command):
+        self._toggleVisibility()
+
+    def _toggleVisibility(self):
         '''Toggles the visibility of this layer'''
         print("Toggle ze visibirity")
         if(self.visible is True):
@@ -45,7 +48,8 @@ class Layer:
             self.hiddenVerts = self.canvas.vertices
             self.canvas.delete()
         else:
-            self.canvas = batch.add(1,gl.GL_POINTS, self.group, ('v2i'), ('c3B'))
+            self.canvas = self.batch.add(1,gl.GL_POINTS, self.group, ('v2i'), ('c3B'))
+            self.canvas.resize(int(len(self.hiddenVerts)/2))
             self.canvas.colors = self.hiddenColors
             self.canvas.vertices = self.hiddenVerts
             
@@ -57,7 +61,6 @@ class Layer:
         colorStep = len(self.canvas.colors)
         # newsize = current size (vertices/2) + number of new points)
         newSize = int(len(self.canvas.vertices)/2.0)+(points.size()*(brush.size*brush.size))
-        print(self.visible)
         self.canvas.resize(newSize)
 
         #prepare for moar lagz
