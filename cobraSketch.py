@@ -165,6 +165,8 @@ class CobraSketch:
                                     on_select=self.on_select, text="Edit"),
                     kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
                                     on_select=self.on_select, text="Brush"),
+                    kytten.Dropdown(['Create Layer'],
+                                    on_select=self.on_select, on_click=self.canvas.addLayer, text="Layers"),
                 ], padding=0, align=kytten.VALIGN_TOP)
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
@@ -174,16 +176,16 @@ class CobraSketch:
 
     def layerDialog(self):
         # Set up a Dialog to choose test dialogs to show
-        layers = ['layer 1', 'layer 2', 'layer 3']
         content = [item for sublist in
                    [
                        [kytten.HorizontalLayout([
-                           kytten.Checkbox(layer, is_checked=True),
-                           kytten.Button("^"),
-                           kytten.Button("v"),
-                           kytten.Button("X")
+                           kytten.Checkbox(layer.name, is_checked=True,
+                                           on_click=layer.toggleVisibility()),
+                           kytten.Button("^", on_click=self.canvas.incrementLayer(layer.index)),
+                           kytten.Button("v", on_click=self.canvas.decrementLayer(layer.index)),
+                           kytten.Button("X", on_click=self.canvas.deleteLayer(layer.index))
                            ])
-                        ] for layer in layers]
+                        ] for layer in self.canvas.layers]
                    for item in sublist]
         dialog = kytten.Dialog(
             kytten.Frame(
