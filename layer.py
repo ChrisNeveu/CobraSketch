@@ -39,6 +39,7 @@ class Layer:
 
     def toggleVisibility(self):
         '''Toggles the visibility of this layer'''
+        print("Toggle ze visibirity")
         if(self.visible is True):
             self.hiddenColors = self.canvas.colors
             self.hiddenVerts = self.canvas.vertices
@@ -56,6 +57,7 @@ class Layer:
         colorStep = len(self.canvas.colors)
         # newsize = current size (vertices/2) + number of new points)
         newSize = int(len(self.canvas.vertices)/2.0)+(points.size()*(brush.size*brush.size))
+        print(self.visible)
         self.canvas.resize(newSize)
 
         #prepare for moar lagz

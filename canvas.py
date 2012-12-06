@@ -79,7 +79,13 @@ class Canvas:
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
-    def addLayer(self, name, index):
+    def addLayer(self, command):
+        self._addLayer()
+
+    def setCurrentLayer(self, index):
+        self.currentLayer = layers[index]
+
+    def _addLayer(self, index=2, name="Untitled Layer"):
         '''Adds a new layer to the canvas, and selects it as the current canvas'''
         newGroup = graphics.OrderedGroup(index)
         self.layers.append(Layer(self.width, self.height, self.batch,newGroup,len(self.layers)))
@@ -99,12 +105,12 @@ class Canvas:
 
     def incrementLayer(self, layerIndex):
         '''Increments a layer's drawing order by one'''
-        setLayer(layerIndex, self.orders[layerIndex]+1)
+        self.setLayer(layerIndex, self.order[layerIndex]+1)
 
     def decrementLayer(self, layerIndex):
         '''Decrements a layer's drawing order by one'''
-        if(self.orders[layerIndex] > 0):
-            setLayer(layerIndex, self.orders[layerIndex]-1)
+        if(self.order[layerIndex] > 0):
+            self.setLayer(layerIndex, self.order[layerIndex]-1)
 
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
@@ -141,9 +147,6 @@ class Canvas:
         #Clear the canvas and the temporary stroke
         self.canvas.colors = [255,255,255]*self.width*self.height
         self.curStroke = []
-
-        #Testing out new layer
-        self.addLayer("newlayer", self.order[len(self.order)-1]+1)
 
     def drawPoint(self, x, y):
         '''Draws a point directly on the swap canvas'''

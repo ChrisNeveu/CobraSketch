@@ -166,7 +166,7 @@ class CobraSketch:
                     kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
                                     on_select=self.on_select, text="Brush"),
                     kytten.Dropdown(['Create Layer'],
-                                    on_select=self.on_select, on_click=self.canvas.addLayer, text="Layers"),
+                                    on_select=self.canvas.addLayer, text="Layers"),
                 ], padding=0, align=kytten.VALIGN_TOP)
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
@@ -180,7 +180,7 @@ class CobraSketch:
                    [
                        [kytten.HorizontalLayout([
                            kytten.Checkbox(layer.name, is_checked=True,
-                                           on_click=layer.toggleVisibility()),
+                                           on_click=layer.toggleVisibility),
                            kytten.Button("^", on_click=self.canvas.incrementLayer(layer.index)),
                            kytten.Button("v", on_click=self.canvas.decrementLayer(layer.index)),
                            kytten.Button("X", on_click=self.canvas.deleteLayer(layer.index))
