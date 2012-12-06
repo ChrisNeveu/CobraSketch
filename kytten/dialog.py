@@ -543,7 +543,6 @@ class Dialog(Wrapper, DialogEventManager):
         """
         self.is_dragging = False
         if self.on_release is not None:
-            print("testing this thing")
             self.on_release(x, y, button, modifiers)
         return DialogEventManager.on_mouse_release(self, x, y,
                                                    button, modifiers)
