@@ -41,6 +41,7 @@ class Layer:
 
             
     def addStroke(self, points, brush):
+        '''Adds a stroke to the canvas, drawing the appropriate pixels. The stroke is not saved'''
         vertexStep = len(self.canvas.vertices)
         colorStep = len(self.canvas.colors)
         # newsize = current size (vertices/2) + number of new points)
@@ -57,28 +58,7 @@ class Layer:
                     vertexStep = vertexStep + 2
 
         self.canvas.colors[colorStep:] = [brush.shade]*(len(self.canvas.colors)-colorStep)
-        print(points.size(),"points added to a layer")
-        
-    '''
-    def addPoint(self, x, y):
-        for i in range(0, 2):
-            for j in range(0, 2):
-                #Resize VertexList
-                newSize = int(len(self.canvas.vertices)/2.0)+1
-                self.canvas.resize(newSize)
-
-                #Modify appropriate vertex points...
-                newVert = len(self.canvas.vertices)
-                self.canvas.vertices[newVert-2] = x
-                self.canvas.vertices[newVert-1] = y
-
-                #And the appropriate color values
-                newColor = len(self.canvas.colors)
-                self.canvas.colors[newColor-3] = 255
-                self.canvas.colors[newColor-2] = 0
-                self.canvas.colors[newColor-1] = 0
-    '''
-                
+        print(points.size(),"points added to a layer") 
 
 
     def resizeLayer(self, top, right, bottom, left):

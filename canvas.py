@@ -67,7 +67,8 @@ class Canvas:
         layerAction.name = self.currentLayer.name
         self.his.addAction(layerAction)
 
-    def draw(self):        
+    def draw(self):
+        '''Updates the canvas, drawing all layers'''
         self.batch.draw()
 
     def _buildCanvas(self, canvas):
@@ -79,14 +80,34 @@ class Canvas:
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
     def addLayer(self, name, index):
-        '''Something goes here'''
+        '''Adds a new layer to the canvas, and selects it as the current canvas'''
         newGroup = graphics.OrderedGroup(index)
         self.layers.append(Layer(name, self.width, self.height, self.batch,newGroup))
         self.currentLayer = self.layers[len(self.layers)-1]
-        self.brush.setShade(self.brush.shade-10)
-        self.brush.setSize(self.brush.size+1)
+
+    def setLayer(self, layerIndex, orderValue):
+        '''Sets the drawing order of a layer to the selected orderValue (0-Background, 1+Foreground)'''
+        newGroup = graphics.OrderedGroup(orderValue)
+        self.order[layerIndex] = orderValue
+        self.layers[layerIndex].group = newGroup
+
+    def deleteLayer(self, layerIndex):
+        '''Deletes a layer from the canvas'''
+        self.order.pop(layerIndex)
+        self.layers.pop(layerIndex)
+        #NOTE - not sure if should delete, or just hide?
+
+    def incrementLayer(self, layerIndex):
+        '''Increments a layer's drawing order by one'''
+        setLayer(layerIndex, self.orders[layerIndex]+1)
+
+    def decrementLayer(self, layerIndex):
+        '''Decrements a layer's drawing order by one'''
+        if(self.orders[layerIndex] > 0):
+            setLayer(layerIndex, self.orders[layerIndex]-1)
 
     def addPoint(self, x, y):
+        '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
         self.pointQueue.append((x, y))
         if (len(self.pointQueue) > 2):
             curPoint = self.pointQueue.popleft()
@@ -125,6 +146,7 @@ class Canvas:
         self.addLayer("newlayer", self.order[len(self.order)-1]+1)
 
     def drawPoint(self, x, y):
+        '''Draws a point directly on the swap canvas'''
         for i in range(0, self.brush.size):
             for j in range(0, self.brush.size):
                 self.canvas.colors[((y+i)*self.width+x+j)*3:((y+i)*self.width+x+j)*3+3] = [self.brush.shade]* 3
