@@ -193,6 +193,7 @@ class CobraSketch:
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
             anchor=kytten.ANCHOR_TOP_RIGHT,
+            on_mouse_release=self.on_mouse_release,
             theme=self.cobalt)
 
 
