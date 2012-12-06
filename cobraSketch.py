@@ -181,15 +181,20 @@ class CobraSketch:
             dialog.teardown()
             self.layerDialog()
 
+        def incLayer(layer):
+            def func():
+                self.canvas.incrementLayer(layer.index)
+            return func
+
         # Set up a Dialog to choose test dialogs to show
         content = [item for sublist in
                    [
                        [kytten.HorizontalLayout([
                            kytten.Checkbox(layer.name, is_checked=True,
                                            on_click=layer.toggleVisibility),
-                           kytten.Button("^", on_click=self.canvas.incrementLayer(layer.index)),
-                           kytten.Button("v", on_click=self.canvas.decrementLayer(layer.index)),
-                           kytten.Button("X", on_click=self.canvas.deleteLayer(layer.index))
+                           kytten.Button("^", on_click=incLayer(layer.index)),
+                           kytten.Button("v"),
+                           kytten.Button("X")
                            ])
                         ] for layer in self.canvas.layers]
                    for item in sublist]
