@@ -164,7 +164,7 @@ class CobraSketch:
                     kytten.Dropdown(['Copy', 'Cut', 'Paste'],
                                     on_select=self.on_select, text="Edit"),
                     kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
-                                    on_select=self.on_select, text="Brush"),
+                                    on_select=self.canvas.setBrushSize, text="Brush"),
                     kytten.Dropdown(['Create Layer'],
                                     on_select=self.canvas.addLayer, text="Layers"),
                 ], padding=0, align=kytten.VALIGN_TOP)

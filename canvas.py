@@ -79,6 +79,19 @@ class Canvas:
                 canvas.vertices[i*2:i*2+2] = [x, y]
                 canvas.colors[i*3:i*3+3] = [255, 255, 255]
 
+    def setBrushSize(self, command):
+        if(command == 'Increase Brush Size'):
+            self._incBrush()
+        else:
+            self._decBrush()
+    def _incBrush(self):
+        if(self.brush.size < 10):
+            self.brush.size = self.brush.size + 2
+
+    def _decBrush(self):
+        if(self.brush.size > 2):
+            self.brush.size = self.brush.size - 2
+
     def addLayer(self, command):
         self._addLayer()
 
@@ -112,6 +125,9 @@ class Canvas:
         if(self.order[layerIndex] > 0):
             self.setLayer(layerIndex, self.order[layerIndex]-1)
 
+    def erasePoint(self,x,y):
+        '''shell for eraser function '''
+        
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
         if(self.currentLayer.visible):
@@ -153,8 +169,8 @@ class Canvas:
     def drawPoint(self, x, y):
         '''Draws a point directly on the swap canvas'''
         for i in range(0, self.brush.size):
-            for j in range(0, self.brush.size):
-                self.canvas.colors[((y+i)*self.width+x+j)*3:((y+i)*self.width+x+j)*3+3] = [self.brush.shade]* 3
+            row = [self.brush.shade]* 3 * self.brush.size
+            self.canvas.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = row
 
                 
     def _2dTo1d(self, x, y):
