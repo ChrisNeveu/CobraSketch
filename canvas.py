@@ -92,7 +92,7 @@ class Canvas:
         if(self.brush.size > 2):
             self.brush.size = self.brush.size - 2
 
-    def addLayer(self, command):
+    def addLayer(self):
         self._addLayer()
 
     def setCurrentLayer(self, index):
