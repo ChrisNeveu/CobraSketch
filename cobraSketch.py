@@ -171,6 +171,23 @@ class CobraSketch:
             on_mouse_release=self.on_mouse_release,
             theme=self.cobalt)
 
+    def layerDialog(self):
+        # Set up a Dialog to choose test dialogs to show
+        dialog = kytten.Dialog(
+            kytten.Frame(
+                kytten.VerticalLayout([
+                    kytten.Dropdown(['Save File', 'Open File'],
+                                    on_select=self.on_select, text="File"),
+                    kytten.Dropdown(['Copy', 'Cut', 'Paste'],
+                                    on_select=self.on_select, text="Edit"),
+                    kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
+                                    on_select=self.on_select, text="Brush"),
+                ], padding=0, align=kytten.VALIGN_TOP)
+            ),
+            window=self.window, batch=self.canvas.batch, group=self.fg_group,
+            anchor=kytten.ANCHOR_TOP_LEFT,
+            theme=self.cobalt)
+
 
 sketch = CobraSketch()
 
