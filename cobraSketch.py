@@ -57,16 +57,39 @@ class CobraSketch:
     def open(self, file):
         '''Determines whether the file is a CobraSketch file or a bitmap
         and acts accordingly to load that file into the program.'''
+        fileName = file.split('.')
+        fileType = fileName[len(fileName)-1]
+        if fileType.lower() == 'png':
+            self.canvas.load(self._loadPNG(file))
+        else:
+            print(fileType, ' not supported.')
 
     def save(self, file):
         '''Accepts a file location and saves either a bitmap or
         Cobrasketch file.'''
+        fileName = file.split('.')
+        fileType = fileName[len(fileName)-1]
+        if fileType.lower() == 'png':
+            self._savePNG(file, self.canvas.export())
+        else:
+            print(fileType, ' not supported.')
 
-    def _loadFile(self, file):
-        '''Sets the program state to the contents of a file'''
+    def _loadPNG(self, file):
+        '''Returns an array containing the pixel data for a PNG''' 
+        png = pyglet.image.load(file)
+        data = png.get_data('R', png.width)
+        return [int.from_bytes(data[i:i+1],'little') for i in range(0,len(data), 1)]
 
-    def _saveFile(self, file):
+    def _savePNG(self, file, pixels):
         '''Saves the current program state to a file'''
+        out = pyglet.image.load('blank.png')
+        pixels = [item for sublist in [[x, x, x] for x in pixels] for item in sublist]
+
+        frame = bytes(pixels)
+
+        out.set_data('RGB', out.width*3, frame)
+        out.save(file)
+
 
     def _importImage(self, file):
         '''Loads a bitmap into the canvas'''
@@ -181,19 +204,41 @@ class CobraSketch:
             dialog.teardown()
             self.layerDialog()
 
-        def incLayer(layer):
+        def focusLayer(foo):
             def func():
-                self.canvas.incrementLayer(layer.index)
+                ''''''
+            return func
+
+        def incLayer(foo):
+            def func():
+                self.canvas.incrementLayer(foo)
+                dialog.teardown()
+                self.layerDialog()
+            return func
+
+        def decLayer(foo):
+            def func():
+                self.canvas.decrementLayer(foo)
+                dialog.teardown()
+                self.layerDialog()
+            return func
+
+        def delLayer(foo):
+            def func():
+                self.canvas.deleteLayer(foo)
+                dialog.teardown()
+                self.layerDialog()
             return func
 
         content = [item for sublist in
                    [
                        [kytten.HorizontalLayout([
+                           kytten.Button("S", on_click=focusLayer(layer.index)),
                            kytten.Checkbox(layer.name, is_checked=True,
                                            on_click=layer.toggleVisibility),
                            kytten.Button("^", on_click=incLayer(layer.index)),
-                           kytten.Button("v"),
-                           kytten.Button("X")
+                           kytten.Button("v", on_click=decLayer(layer.index)),
+                           kytten.Button("X", on_click=delLayer(layer.index))
                            ])
                         ] for layer in self.canvas.layers]
                    for item in sublist]
