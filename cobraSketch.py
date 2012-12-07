@@ -178,6 +178,14 @@ class CobraSketch:
             print("Unexpected menu selection: %s" % choice)
 
     def mainDialog(self):
+        def brushMenu(command):
+            if command == 'Increase Brush Size' or command =='Decrease Brush Size':
+                self.canvas.setBrushSize(command)
+            elif command == 'Pencil':
+                '''thing'''
+            elif command == 'Eraser':
+                '''thing'''
+        
         # Set up a Dialog to choose test dialogs to show
         dialog = kytten.Dialog(
             kytten.Frame(
@@ -186,8 +194,8 @@ class CobraSketch:
                                     on_select=self.on_select, text="File"),
                     kytten.Dropdown(['Copy', 'Cut', 'Paste'],
                                     on_select=self.on_select, text="Edit"),
-                    kytten.Dropdown(['Increase Brush Size', 'Decrease Brush Size'],
-                                    on_select=self.canvas.setBrushSize, text="Brush"),
+                    kytten.Dropdown(['Pencil', 'Eraser', 'Increase Brush Size', 'Decrease Brush Size'],
+                                    on_select=brushMenu, text="Brush"),
                     kytten.Dropdown(['Create Layer'],
                                     on_select=self.canvas.addLayer, text="Layers"),
                 ], padding=0, align=kytten.VALIGN_TOP)
