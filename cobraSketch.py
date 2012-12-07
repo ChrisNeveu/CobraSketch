@@ -234,7 +234,7 @@ class CobraSketch:
                    [
                        [kytten.HorizontalLayout([
                            kytten.Button("S", on_click=focusLayer(layer.index)),
-                           kytten.Checkbox(layer.name, is_checked=True,
+                           kytten.Checkbox(layer.name, is_checked=layer.visible,
                                            on_click=layer.toggleVisibility),
                            kytten.Button("^", on_click=incLayer(layer.index)),
                            kytten.Button("v", on_click=decLayer(layer.index)),
