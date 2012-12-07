@@ -70,10 +70,10 @@ class Canvas:
         self.currentLayer = self.layers[0]
         self.order.append(1)
         
-        layerAction = Action()
-        layerAction.layer = self.currentLayer
-        layerAction.name = self.currentLayer.name
-        self.his.addAction(layerAction)
+        self.layerAction = Action()
+        self.layerAction.layer = self.currentLayer
+        self.layerAction.name = self.currentLayer.name
+        self.his.addAction(self.layerAction)
 
     def draw(self):
         '''Updates the canvas, drawing all layers'''
@@ -124,6 +124,10 @@ class Canvas:
         self.order.append(len(self.layers)+1)
         self.layers.append(Layer(self.width, self.height, self.batch,newGroup,len(self.layers)))
         self.currentLayer = self.layers[len(self.layers)-1]
+        #Adds the new layer to history
+        self.layerAction = self.currentLayer
+        self.layerAction.name = self.currentLayer.name
+        self.his.addAction(self.layerAction)
 
     def setLayer(self, layerIndex, orderValue):
         '''Sets the drawing order of a layer to the selected orderValue (0-Background, 1+Foreground)'''
