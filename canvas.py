@@ -44,14 +44,15 @@ class Canvas:
         self.windowHeight = 600
 
         self.curStroke = []
-        self.brush = Brush(2,"Nope",110)
+        self.brush = Brush(2,"brush",110)
+        self.eraser = Brush(2,"eraser",255)
         self.eraser = False
         self.his = History()
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
         self.background = graphics.OrderedGroup(0)
-        self.drawingLayer = graphics.OrderedGroup(5)
+        self.drawingLayer = graphics.OrderedGroup(1)
         self.layer1 = graphics.OrderedGroup(1)
         
         self.canvas = self.batch.add(self.width*self.height,
@@ -105,15 +106,22 @@ class Canvas:
         if(self.brush.size > 2):
             self.brush.size = self.brush.size - 2
 
+    def setBrush(self):
+        self.eraser = false
+
+    def setEraser(self):
+        self.eraser = true
+
     def addLayer(self):
         self._addLayer()
 
     def setCurrentLayer(self, index):
         self.currentLayer = layers[index]
 
-    def _addLayer(self, index=2, name="Untitled Layer"):
+    def _addLayer(self, name="Untitled Layer"):
         '''Adds a new layer to the canvas, and selects it as the current canvas'''
-        newGroup = graphics.OrderedGroup(index)
+        newGroup = graphics.OrderedGroup(len(self.layers)+1)
+        self.order.append(len(self.layers)+1)
         self.layers.append(Layer(self.width, self.height, self.batch,newGroup,len(self.layers)))
         self.currentLayer = self.layers[len(self.layers)-1]
 
@@ -122,21 +130,36 @@ class Canvas:
         newGroup = graphics.OrderedGroup(orderValue)
         self.order[layerIndex] = orderValue
         self.layers[layerIndex].group = newGroup
+        self.layers[layerIndex].index = orderValue
 
     def deleteLayer(self, layerIndex):
         '''Deletes a layer from the canvas'''
-        self.order.pop(layerIndex)
-        self.layers.pop(layerIndex)
-        #NOTE - not sure if should delete, or just hide?
+        print(layerIndex)
+        if(layerIndex > 0 and layerIndex < len(self.layers)):
+            for layer in self.layers[layerIndex:len(self.layers)]:
+                layer.index = layer.index -1            
+            self.order.pop(layerIndex)
+            self.layers.pop(layerIndex)
 
     def incrementLayer(self, layerIndex):
-        '''Increments a layer's drawing order by one'''
-        self.setLayer(layerIndex, self.order[layerIndex]+1)
+        print(layerIndex-1)
+        '''Increments a layer's drawing order by swapping it's position in the hierarchy with the one above it, if any'''
+        if(layerIndex-1 < len(self.order)):
+            oldLayer = self.order[layerIndex-1]
+            newLayer = self.order[layerIndex]
+            self.setLayer(layerIndex-1, newLayer)
+            self.setLayer(layerIndex, oldLayer)
+            print(layerIndex,self.order)
 
     def decrementLayer(self, layerIndex):
+        print(layerIndex)
         '''Decrements a layer's drawing order by one'''
-        if(self.order[layerIndex] > 0):
-            self.setLayer(layerIndex, self.order[layerIndex]-1)
+        if(layerIndex < len(self.layers) and layerIndex > 0):
+            oldLayer = self.order[layerIndex]
+            newLayer = self.order[layerIndex-1]
+            self.setLayer(layerIndex, newLayer)
+            self.setLayer(layerIndex-1, oldLayer)
+            print(layerIndex,self.order)
         
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
@@ -162,17 +185,16 @@ class Canvas:
                 curPoint = self.pointQueue.popleft()
                 self.drawPoint(curPoint[0], curPoint[1])
                 self.curStroke.append(curPoint)
-
-            #Debug stuff
-            print(self.eraser)
-            self.eraser = not self.eraser
             
-
             #Add the current stroke to the history and the layer
             newAction = Action()
             newAction.name = 'Stroke'
             finalStroke = Stroke(self.curStroke,255)
-            self.currentLayer.addStroke(finalStroke,self.brush)
+            if(not self.eraser):
+                self.currentLayer.addStroke(finalStroke,self.brush)
+            else:
+                self.currentLayer.addStroke(finalStroke,self.eraser)
+                
             newAction.stroke = finalStroke
             self.his.addAction(newAction)
 

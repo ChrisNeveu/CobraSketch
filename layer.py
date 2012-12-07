@@ -42,7 +42,6 @@ class Layer:
 
     def _toggleVisibility(self):
         '''Toggles the visibility of this layer'''
-        print("Toggle ze visibirity")
         if(self.visible is True):
             self.hiddenColors = self.canvas.colors
             self.hiddenVerts = self.canvas.vertices
@@ -73,7 +72,6 @@ class Layer:
                     vertexStep = vertexStep + 2
 
         self.canvas.colors[colorStep:] = [brush.shade]*(len(self.canvas.colors)-colorStep)
-        print(points.size(),"points added to a layer") 
 
 
     def resizeLayer(self, top, right, bottom, left):
