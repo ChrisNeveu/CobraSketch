@@ -77,13 +77,13 @@ class CobraSketch:
     def _loadPNG(self, file):
         '''Returns an array containing the pixel data for a PNG''' 
         png = pyglet.image.load(file)
-        data = png.get_data('R', png.width)
+        data = png.get_data('RGB', png.width*3)
         return [int.from_bytes(data[i:i+1],'little') for i in range(0,len(data), 1)]
 
     def _savePNG(self, file, pixels):
         '''Saves the current program state to a file'''
         #print("loading blank")
-        out = pyglet.image.load('blank.png')
+        out = pyglet.image.load('theme/blank.png')
         #print("blank loaded")
         pixels = [item for sublist in [[x, x, x] for x in pixels] for item in sublist]
         #print("pixels pixled")
@@ -200,8 +200,6 @@ class CobraSketch:
                                     on_select=self.on_select, text="Edit"),
                     kytten.Dropdown(['Pencil', 'Eraser', 'Increase Brush Size', 'Decrease Brush Size'],
                                     on_select=brushMenu, text="Brush"),
-                    kytten.Dropdown(['Create Layer'],
-                                    on_select=self.canvas.addLayer, text="Layers"),
                 ], padding=0, align=kytten.VALIGN_TOP)
             ),
             window=self.window, batch=self.canvas.batch, group=self.fg_group,
@@ -218,7 +216,7 @@ class CobraSketch:
 
         def focusLayer(foo):
             def func():
-                ''''''
+                self.canvas.setCurrentLayer(foo)
             return func
 
         def incLayer(foo):
@@ -249,8 +247,7 @@ class CobraSketch:
                            kytten.Checkbox(layer.name, is_checked=layer.visible,
                                            on_click=layer.toggleVisibility),
                            kytten.Button("^", on_click=incLayer(layer.index)),
-                           kytten.Button("v", on_click=decLayer(layer.index)),
-                           kytten.Button("X", on_click=delLayer(layer.index))
+                           kytten.Button("v", on_click=decLayer(layer.index))
                            ])
                         ] for layer in self.canvas.layers]
                    for item in sublist]

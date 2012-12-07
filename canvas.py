@@ -277,8 +277,8 @@ class Canvas:
         '''Recieves the appropriate information from Sketch for loading'''
         print("loading")
         print(len(pixels),len(self.canvas.colors))
-        for i in range(0,int(len(self.canvas.colors)/3)):
-            self.canvas.colors[i:i+3] = [pixels[i]]*3
+        for i in range(0,len(self.canvas.colors)):
+            self.canvas.colors[i:i+3] = pixels[i:i+3]
 
         self.layers = []
         self.order = []
