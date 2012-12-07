@@ -82,9 +82,11 @@ class CobraSketch:
 
     def _savePNG(self, file, pixels):
         '''Saves the current program state to a file'''
+        #print("loading blank")
         out = pyglet.image.load('blank.png')
+        #print("blank loaded")
         pixels = [item for sublist in [[x, x, x] for x in pixels] for item in sublist]
-
+        #print("pixels pixled")
         frame = bytes(pixels)
 
         out.set_data('RGB', out.width*3, frame)
@@ -134,6 +136,7 @@ class CobraSketch:
 
         def on_select(filename):
             print("File load: %s" % filename)
+            self.open(filename)
             self.on_escape(dialog)
 
         dialog = kytten.FileLoadDialog(  # by default, path is current working dir
@@ -147,6 +150,7 @@ class CobraSketch:
 
         def on_select(filename):
             print("File save: %s" % filename)
+            self.save(filename)
             self.on_escape(dialog)
 
         dialog = kytten.FileSaveDialog(  # by default, path is current working dir
@@ -182,9 +186,9 @@ class CobraSketch:
             if command == 'Increase Brush Size' or command =='Decrease Brush Size':
                 self.canvas.setBrushSize(command)
             elif command == 'Pencil':
-                '''thing'''
+                self.canvas.setPencil()
             elif command == 'Eraser':
-                '''thing'''
+                self.canvas.setEraser()
         
         # Set up a Dialog to choose test dialogs to show
         dialog = kytten.Dialog(

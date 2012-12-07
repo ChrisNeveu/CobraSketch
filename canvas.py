@@ -46,13 +46,13 @@ class Canvas:
         self.curStroke = []
         self.brush = Brush(2,"brush",110)
         self.eraser = Brush(2,"eraser",255)
-        self.eraser = False
+        self.eraserMode = False
         self.his = History()
 
         self.pointQueue = deque([])
         self.batch = graphics.Batch()
         self.background = graphics.OrderedGroup(0)
-        self.drawingLayer = graphics.OrderedGroup(1)
+        self.drawingLayer = graphics.OrderedGroup(2)
         self.layer1 = graphics.OrderedGroup(1)
         
         self.canvas = self.batch.add(self.width*self.height,
@@ -106,11 +106,11 @@ class Canvas:
         if(self.brush.size > 2):
             self.brush.size = self.brush.size - 2
 
-    def setBrush(self):
-        self.eraser = false
+    def setPencil(self):
+        self.eraserMode = False
 
     def setEraser(self):
-        self.eraser = true
+        self.eraserMode = True
 
     def addLayer(self):
         self._addLayer()
@@ -134,7 +134,6 @@ class Canvas:
 
     def deleteLayer(self, layerIndex):
         '''Deletes a layer from the canvas'''
-        print(layerIndex)
         if(layerIndex > 0 and layerIndex < len(self.layers)):
             for layer in self.layers[layerIndex:len(self.layers)]:
                 layer.index = layer.index -1            
@@ -142,24 +141,20 @@ class Canvas:
             self.layers.pop(layerIndex)
 
     def incrementLayer(self, layerIndex):
-        print(layerIndex-1)
         '''Increments a layer's drawing order by swapping it's position in the hierarchy with the one above it, if any'''
         if(layerIndex-1 < len(self.order)):
             oldLayer = self.order[layerIndex-1]
             newLayer = self.order[layerIndex]
             self.setLayer(layerIndex-1, newLayer)
             self.setLayer(layerIndex, oldLayer)
-            print(layerIndex,self.order)
 
     def decrementLayer(self, layerIndex):
-        print(layerIndex)
         '''Decrements a layer's drawing order by one'''
         if(layerIndex < len(self.layers) and layerIndex > 0):
             oldLayer = self.order[layerIndex]
             newLayer = self.order[layerIndex-1]
             self.setLayer(layerIndex, newLayer)
             self.setLayer(layerIndex-1, oldLayer)
-            print(layerIndex,self.order)
         
     def addPoint(self, x, y):
         '''Adds a point to the current stroke list and calls drawPoint to draw it on the canvas'''
@@ -190,7 +185,7 @@ class Canvas:
             newAction = Action()
             newAction.name = 'Stroke'
             finalStroke = Stroke(self.curStroke,255)
-            if(not self.eraser):
+            if(not self.eraserMode):
                 self.currentLayer.addStroke(finalStroke,self.brush)
             else:
                 self.currentLayer.addStroke(finalStroke,self.eraser)
@@ -211,12 +206,15 @@ class Canvas:
             for q in range(0, self.brush.size):
                 vertRow.append(x+q)
                 vertRow.append(y+i)
-            if(not self.eraser):
+            if(not self.eraserMode):
                 colorRow = [self.brush.shade]* 3 * self.brush.size
+                self.swap.vertices[((y+i)*self.width+x)*2:((y+i)*self.width+x)*2+2*self.brush.size] = vertRow
+                self.swap.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = colorRow
             else:
-                colorRow = [255]* 3 * self.brush.size
-            self.swap.vertices[((y+i)*self.width+x)*2:((y+i)*self.width+x)*2+2*self.brush.size] = vertRow
-            self.swap.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = colorRow
+                colorRow = [self.eraser.shade]* 3 * self.brush.size
+                self.swap.vertices[((y+i)*self.width+x)*2:((y+i)*self.width+x)*2+2*self.brush.size] = vertRow
+                self.swap.colors[((y+i)*self.width+x)*3:((y+i)*self.width+x)*3+3*self.brush.size] = colorRow
+            
 
                 
     def _2dTo1d(self, x, y):
@@ -254,12 +252,39 @@ class Canvas:
             #Otherwise move the screen right to show the extra space added
             referenceX = referenceX + right
 
-    def export(self, filename):
-        '''Passes the appropriate information to Sketch for saving'''
-        
+    def export(self):
+        '''Passes an array of [R G B] * Pixels to CobraSketch for storing'''
+        out = [255] * (self.height * self.width)
+        for layer in self.layers:
+            cIndex = 0
+            for i in range(0,int(len(layer.canvas.vertices)/2)):
+                x = layer.canvas.vertices[i*2]
+                y = layer.canvas.vertices[i*2+1]
+                r = layer.canvas.colors[cIndex]
+                g = layer.canvas.colors[cIndex+1]
+                b = layer.canvas.colors[cIndex+2]
+                out[self._2dTo1d(x,y)] = r
+                
+                cIndex = cIndex + 3
+        print("done exporting")
+        return out
 
-    def load(self, filename):
+    def load(self, pixels):
         '''Recieves the appropriate information from Sketch for loading'''
+        print("loading")
+        print(len(pixels),len(self.canvas.colors))
+        for i in range(0,int(len(self.canvas.colors)/3)):
+            self.canvas.colors[i:i+3] = [pixels[i]]*3
+
+        self.layers = []
+        self.order = []
+        
+        self.drawingLayer = graphics.OrderedGroup(2)
+        self.layer1 = graphics.OrderedGroup(1)
+        self.layers.append(Layer(self.width,self.height,self.batch,self.layer1,0))        
+        self.currentLayer = self.layers[0]
+        self.order.append(1)
+        
 
     def newStroke(self, points, brush):
         '''Applys the given points using brush to the current layer'''
