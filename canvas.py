@@ -116,7 +116,7 @@ class Canvas:
         self._addLayer()
 
     def setCurrentLayer(self, index):
-        self.currentLayer = layers[index]
+        self.currentLayer = self.layers[index]
 
     def _addLayer(self, name="Untitled Layer"):
         '''Adds a new layer to the canvas, and selects it as the current canvas'''
